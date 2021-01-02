@@ -40,7 +40,7 @@ for k = 1:numel(t)
         end
         
         % --- Object coordinates ---%
-        E(k,i) = a*cosh(u).*cos(2*t(1,k)*u);
+        E(k,i) = a*cosh(u).*cos(2*t(1,k)*u); % object 'deviation' coefficient ; default : 2
         F(k,i) = a*cosh(u).*sin(2*t(1,k)*u);
         G(k,i) = a*u;
         
