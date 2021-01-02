@@ -6,11 +6,11 @@ function[] = Kerr_black_hole_animation()
 
 clear all, close all, clc;
 
-step = 2*pi/60;         % catenoid angle step
-step2 = 2;              % catenoid sub sampling parameter
-a = 6;                  % catenoid shape parameter
-t = linspace(0,1.5,32); % rotation & animation time parameter
-time_lapse = 0.25;      % time lapse for animation
+step = 2*pi/60;         % catenoid angle step ; default value : 2*pi/60
+step2 = 2;              % catenoid sub sampling parameter ; default value : 2
+a = 6;                  % catenoid shape parameter ; default value : 6
+t = linspace(0,1.5,32); % rotation & animation time parameter ; default value : linspace(0,1.5,32)
+time_lapse = 0.25;      % time lapse for animation ; default value : 0.25
 
 filename = 'Kerr_black_hole_animation.gif';
 
@@ -26,7 +26,7 @@ for k = 1:numel(t)
     i = 1;
     j = 1;
     
-    for u = 0:5e-2:8 % catenoid shape parameter sampling vector
+    for u = 0:5e-2:8 % catenoid shape parameter sampling vector ; default value : 0:5e-2:8
         
         for v = 0:step:2*pi % catenoid longitudinal (loop over) parameter sampling vector
             
