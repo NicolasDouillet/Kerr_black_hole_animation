@@ -1,10 +1,8 @@
-function[] = Kerr_black_hole_animation()
+function [] = Kerr_black_hole_animation()
 % Kerr_black_hole_animation : modeling function for a rotating black hole (Kerr black hole)
 %
-% Author & support nicolas.douillet (at) free.fr, 2007-2021.
+% Author : nicolas.douillet (at) free.fr, 2007-2024.
 
-
-clear all, close all, clc;
 
 step = 2*pi/60;         % catenoid angle step ; default value : 2*pi/60
 step2 = 2;              % catenoid sub sampling parameter ; default value : 2
