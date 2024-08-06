@@ -11,8 +11,8 @@ p = 3;                  % object path angle coefficieent
 t = linspace(0,1.5,32); % rotation & animation time parameter ; default value : linspace(0,1.5,32)
 time_lapse = 0.25;      % time lapse for animation ; default value : 0.25
 h_sample = 6;           % horizontal sample rate for the black hole mesh; must divide Zid_start
-v_sample = 24;          % vertical sample rate for the black hole mesh;   must divide Zid_start
-Zid_start = 90;         % Framing coefficient; must be a multiple of h_sample and v_sample
+v_sample = 18;          % vertical sample rate for the black hole mesh;   must divide Zid_start
+Zid_start = 210;         % Framing coefficient; must be a multiple of h_sample and v_sample
 
 
 filename = 'Kerr_black_hole_animation.gif';
@@ -27,9 +27,10 @@ Y = a*cosh(u).*sin(v+t(end)*u);
 Z = repmat(a*u,[1,size(v,2)]);
 
 % Object path coordinates
-E = a*cosh(u).*cos(p*t(end)*u-0.5*pi);
-F = a*cosh(u).*sin(p*t(end)*u-0.5*pi);
-G = a*u;
+w = (0:2e-2:8)';
+E = a*cosh(w).*cos(p*t(end)*w-0.5*pi);
+F = a*cosh(w).*sin(p*t(end)*w-0.5*pi);
+G = a*w;
 
 %--- Static display settings ---%
 h = figure;
