@@ -16,28 +16,17 @@ time_lapse = 0.25;      % time lapse for animation ; default value : 0.25
 h_sample = 6;           % horizontal sample rate for the black hole mesh
 v_sample = 12;          % vertical sample rate for the black hole mesh
 
+
 filename = 'Black_hole_animation.gif';
 
-i = 1;
-j = 1;
 
-for u = 0:5e-2:8 % expmspace(exp(5),exp(8),1.5,150) % logspace(0.8, log10(12),150) - 1 % catenoid shape parameter sampling vector ; default value : 0:5e-2:8
-    
-    for v = 0:step:2*pi % catenoid longitudinal (loop over) parameter sampling vector
+u = (0:5e-2:8)';    % default value : 0:5e-2:8
+v = 0:step:2*pi; % catenoid longitudinal (loop over) parameter sampling vector
         
-        %--- (X,Y,Z) point belonging to the surface coordinates ---%
-        X(i,j) = a*cosh(u)*cos(v+t(1,1)*u);
-        Y(i,j) = a*cosh(u)*sin(v+t(1,1)*u);
-        Z(i,j) = a*u;
-        
-        j = j+1;
-        
-    end        
-    
-    j = 1;
-    i = i+1;
-    
-end
+%--- (X,Y,Z) point belonging to the black hole surface coordinates ---%
+X = a*cosh(u).*cos(v+t(1,1)*u);
+Y = a*cosh(u).*sin(v+t(1,1)*u);
+Z = repmat(a*u,[1,size(v,2)]);
 
 
 %--- Static display settings ---%
@@ -87,13 +76,14 @@ for k = Zid_start:-1:1
     
     %--- Black hole vertical curves ---%
     for n = 1:v_sample:size(Z,2)
-        patch(cat(1,X(:,n),flipud(X(1:end-1,n))),cat(1,Y(:,n),flipud(Y(1:end-1,n))),...
-              cat(1,Z(:,n),flipud(Z(1:end-1,n))),cat(1,Z(:,n),flipud(Z(1:end-1,n))).^2,...
-              'FaceColor','none','EdgeColor','Interp','Linewidth',2), hold on;
+        
+        patch(cat(1,X(1:end,n),flipud(X(1:end-1,n))),cat(1,Y(1:end,n),flipud(Y(1:end-1,n))),...
+              cat(1,Z(1:end,n),flipud(Z(1:end-1,n))),cat(1,Z(1:end,n),flipud(Z(1:end-1,n))).^2,...
+              'FaceColor','none','EdgeColor','Interp','Linewidth',2), hold on;                   
     end
     
     %--- Event horizon ---%
-    line(X(end,:),Y(end,:),Z(end,:),'Color',[0 1 0],'Linewidth',2), hold on;            
+    line(X(end,:),Y(end,:),Z(end,:),'Color',[0 1 0],'Linewidth',2), hold on;
     
     %--- Display settings ---%
     ax = gca;
@@ -121,7 +111,6 @@ for k = Zid_start:-1:1
     end
     
     clf(1);
-
     
 end
 
