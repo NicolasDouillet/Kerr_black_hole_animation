@@ -4,83 +4,91 @@ function [] = Kerr_black_hole_animation()
 % Author : nicolas.douillet (at) free.fr, 2007-2024.
 
 
-step = 2*pi/60;         % catenoid angle step ; default value : 2*pi/60
-step2 = 2;              % catenoid sub sampling parameter ; default value : 2
+nb_sample = 360;        % angle precision over 2pi radians
+step = 2*pi/nb_sample;  % catenoid angle step ; default value : 2*pi/60
 a = 6;                  % catenoid shape parameter ; default value : 6
+p = 3;                  % object path angle coefficieent
 t = linspace(0,1.5,32); % rotation & animation time parameter ; default value : linspace(0,1.5,32)
 time_lapse = 0.25;      % time lapse for animation ; default value : 0.25
+h_sample = 6;           % horizontal sample rate for the black hole mesh; must divide Zid_start
+v_sample = 24;          % vertical sample rate for the black hole mesh;   must divide Zid_start
+Zid_start = 90;         % Framing coefficient; must be a multiple of h_sample and v_sample
+
 
 filename = 'Kerr_black_hole_animation.gif';
+
+
+u = (0:5e-2:8)'; % default value : 0:5e-2:8
+v = 0:step:2*pi-step; % catenoid longitudinal (loop over) parameter sampling vector
+
+% Black hole mesh coordinates
+X = a*cosh(u).*cos(v+t(end)*u);
+Y = a*cosh(u).*sin(v+t(end)*u);
+Z = repmat(a*u,[1,size(v,2)]);
+
+% Object path coordinates
+E = a*cosh(u).*cos(p*t(end)*u-0.5*pi);
+F = a*cosh(u).*sin(p*t(end)*u-0.5*pi);
+G = a*u;
 
 %--- Static display settings ---%
 h = figure;
 set(h,'Position',get(0,'ScreenSize'));
-set(gcf,'Color',[0 0 0]);
-axis tight manual;
+set(gcf,'Color',[0 0 0]); 
 
 
-for k = 1:numel(t)   
-
-    i = 1;
-    j = 1;
+for k = Zid_start:-1:1
     
-    for u = 0:5e-2:8 % catenoid shape parameter sampling vector ; default value : 0:5e-2:8
-        
-        for v = 0:step:2*pi % catenoid longitudinal (loop over) parameter sampling vector
-            
-            %--- (X,Y,Z) point belonging to the surface coordinates ---%
-            X(i,j,k) = a*cosh(u)*cos(v+t(1,k)*u);
-            Y(i,j,k) = a*cosh(u)*sin(v+t(1,k)*u);
-            Z(i,j,k) = a*u;
-            
-            j = j+1;
-            
-        end
-        
-        % --- Object coordinates ---%
-        E(k,i) = a*cosh(u).*cos(2*t(1,k)*u); % object 'deviation' coefficient ; default : 2
-        F(k,i) = a*cosh(u).*sin(2*t(1,k)*u);
-        G(k,i) = a*u;
-        
-        j = 1;
-        i = i+1;
+    %--- Black hole horizontal circles ---%    
+    for m = 1:h_sample:size(Z,1)
+        patch(X(1+mod(k+m,size(Z,1)),:),Y(1+mod(k+m,size(Z,1)),:),Z(1+mod(k+m,size(Z,1)),:),Z(1+mod(k+m,size(Z,1)),:).^2,...
+              'FaceColor','none','EdgeColor','Interp','Linewidth',2), hold on;
         
     end
-
-    %--- Sample in x, y, z ---%
-    X = X(1:step2:size(X,1),1:step2:size(X,2),:);
-    Y = Y(1:step2:size(Y,1),1:step2:size(Y,2),:);
-    Z = Z(1:step2:size(Z,1),1:step2:size(Z,2),:);
-
-    %--- Black hole mesh ---%
-    for m = 1:size(Z,1)
-        line(X(m,:,k),Y(m,:,k),Z(m,:,k),'Color',[0 1 1],'Linewidth',2), hold on;
-    end
-
-    for n = 1:size(Z,2)
-        line(X(:,n,k),Y(:,n,k),Z(:,n,k),'Color',[0 1 1],'Linewidth',2), hold on;
-    end
-
-    %--- Object path ---%
-    plot3(E(k,:),F(k,:),G(k,:),'Color',[1 0 0],'Linewidth',4), hold on;
-    plot3(E(k,round((numel(t)-k+1)*(i-1)/numel(t))),F(k,round((numel(t)-k+1)*(i-1)/numel(t))),G(k,round((numel(t)-k+1)*(i-1)/numel(t))),'ro','MarkerSize',12,'Linewidth',12), hold on;        
-
+    
+    %--- Black hole vertical curves ---%
+    for n = 1:v_sample:size(Z,2)
+        
+        patch(cat(1,X(:,1+mod(2*k+n,size(Z,2))),flipud(X(1:end-1,1+mod(2*k+n,size(Z,2))))),cat(1,Y(:,1+mod(2*k+n,size(Z,2))),flipud(Y(1:end-1,1+mod(2*k+n,size(Z,2))))),...
+              cat(1,Z(:,1+mod(2*k+n,size(Z,2))),flipud(Z(1:end-1,1+mod(2*k+n,size(Z,2))))),cat(1,Z(:,1+mod(2*k+n,size(Z,2))),flipud(Z(1:end-1,1+mod(2*k+n,size(Z,2))))).^2,...
+              'FaceColor','none','EdgeColor','Interp','Linewidth',2), hold on;                
+        
+    end        
+    
+    %--- Object and its path ---%
+    plot3(E(end-Zid_start+k-1,1),...
+          F(end-Zid_start+k-1,1),...
+          G(end-Zid_start+k-1,1),...
+          'bo','MarkerSize',12,'Linewidth',12), hold on;
+    
+    plot3(E(end-Zid_start+k-1:end,1),...
+          F(end-Zid_start+k-1:end,1),...
+          G(end-Zid_start+k-1:end,1),...
+          'Color',[0 0 1],'Linewidth',4), hold on;
+        
+    %--- Event horizon ---%
+    line(X(end,:),Y(end,:),Z(end,:),'Color',[0 1 0],'Linewidth',2), hold on;
+    
     %--- Display settings ---%
-    set(gca,'Color',[0 0 0]);           
-    view(0,30);
-    campan(0,2.3);
-    camzoom(3.2);            
+    ax = gca;
+    set(ax,'Color',[0 0 0]);
+    ax.Clipping = 'off';
+    
+    view(0,30)
+    camzoom(2);
+    campan(0.5,2.5);
+    colormap(hot);
+    axis auto, axis square, axis off;
+    
+    title('Spiraling path of an object passing through one rotating | Kerr black hole horizon', 'Color', [1 1 1], 'FontSize', 16);
 
-    title('Kerr black hole rotation and trajectory of an object passing through its horizon.', 'Color', [1 1 1], 'FontSize', 16);
-    
-    drawnow;
-    
+    drawnow;    
     frame = getframe(h);    
     im = frame2im(frame);
     [imind,cm] = rgb2ind(im,256);
     
     %--- Write to the .gif file ---%
-    if k == 1
+    if k == Zid_start
         imwrite(imind,cm,filename,'gif', 'Loopcount',Inf,'DelayTime',time_lapse);
     else
         imwrite(imind,cm,filename,'gif','WriteMode','append','DelayTime',time_lapse);

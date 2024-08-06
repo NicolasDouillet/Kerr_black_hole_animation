@@ -20,7 +20,7 @@ v_sample = 12;          % vertical sample rate for the black hole mesh
 filename = 'Black_hole_animation.gif';
 
 
-u = (0:5e-2:8)';    % default value : 0:5e-2:8
+u = (0:5e-2:8)'; % default value : 0:5e-2:8
 v = 0:step:2*pi; % catenoid longitudinal (loop over) parameter sampling vector
         
 %--- (X,Y,Z) point belonging to the black hole surface coordinates ---%
